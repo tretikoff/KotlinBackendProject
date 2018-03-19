@@ -11,6 +11,8 @@ import io.realworld.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.Errors
 import org.springframework.web.bind.annotation.*
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.validation.Valid
 
 @RestController
@@ -29,7 +31,6 @@ class NoteHandler(val repository: NoteRepository,
     @ApiKeySecured
     @PostMapping("/api/notes")
     fun newNote(@Valid @RequestBody note: Note, errors: Errors): Any {
-        InvalidRequest.check(errors)
         val currentUser = userService.currentUser()
         var newNote = Note(note.title, note.body, currentUser)
         repository.save(newNote)
@@ -39,13 +40,17 @@ class NoteHandler(val repository: NoteRepository,
 
     @ApiKeySecured
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/api/articles/{id}")
+    @DeleteMapping("/api/notes/{id}")
     fun deleteNote(@PathVariable id: Long): Any {
         val note = repository.findById(id)
+        Logger.getAnonymousLogger().log(Level.SEVERE, ">>>>>>>>>>>>>>>>>" + note)
         repository.removeById(id)
         return note
     }
 
     fun NotesView(notes: List<Note>, currentUser: User)
             = mapOf("notes" to notes)
+
+    fun NoteView(note: Note)
+            = mapOf("note" to note)
 }

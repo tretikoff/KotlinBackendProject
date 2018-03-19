@@ -9,13 +9,14 @@ export default (state = {}, action) => {
     case NOTES_PAGE_UNLOADED:
       return {};
     case ADD_NOTE:
-      console.log("Add group", action.payload);
+      console.log("Add note", action.payload);
       return {
         notes:
           [...state.notes, action.payload]
       };
     case REMOVE_NOTE:
       const noteId = action.payload;
+      console.log("remove note", noteId);
       return {
         notes: state.notes.filter(({id}) => id !== noteId)
       };

@@ -1,8 +1,6 @@
 package io.realworld.model
 
 import com.fasterxml.jackson.annotation.JsonRootName
-import org.hibernate.annotations.Cascade
-import org.hibernate.annotations.CascadeType
 import java.sql.Date
 import javax.persistence.*
 
@@ -11,8 +9,9 @@ import javax.persistence.*
 data class Event(var title: String = "",
                  var start: Date,
                  var end: Date,
-                 @ManyToOne(fetch = FetchType.LAZY)
-                 @Cascade(CascadeType.ALL)
+                 @ManyToOne(cascade = arrayOf(javax.persistence.CascadeType.MERGE,
+                         javax.persistence.CascadeType.PERSIST,
+                         javax.persistence.CascadeType.REFRESH))
                  @JoinColumn(name = "user_id")
                  var user: User = User(),
                  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
