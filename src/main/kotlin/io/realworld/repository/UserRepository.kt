@@ -13,4 +13,5 @@ interface UserRepository : CrudRepository<User, Long> {
     fun findByToken(token: String): User?
     fun findByEmailAndPassword(email: String, password: String): User?
     fun findByUsername(username: String): User?
+    fun findByChatId(chatId: Long): User?
 }

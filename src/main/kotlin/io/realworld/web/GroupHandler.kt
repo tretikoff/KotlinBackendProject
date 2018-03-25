@@ -9,6 +9,8 @@ import io.realworld.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.Errors
 import org.springframework.web.bind.annotation.*
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.validation.Valid
 
 @RestController
@@ -20,7 +22,10 @@ class GroupHandler(val repository: GroupRepository,
     @GetMapping("/api/groups")
     fun groups(): Any {
         val user = userRepository.findByUsername(userService.currentUser.get().username)
-        return groupsView(user!!.groups)
+        var groups = user!!.groups;
+        for (group in groups)
+            Logger.getAnonymousLogger().log(Level.SEVERE, group.toString())
+        return groupsView(groups)
     }
 
     @ApiKeySecured
@@ -38,6 +43,7 @@ class GroupHandler(val repository: GroupRepository,
         }
 
         repository.save(newGroup)
+        Logger.getAnonymousLogger().log(Level.SEVERE, newGroup.toString())
         return newGroup
     }
 
@@ -53,9 +59,10 @@ class GroupHandler(val repository: GroupRepository,
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/api/groups/{partialName}")
     fun findByPartialName(@PathVariable partialName: String): Any {
-        return repository.findByPartialName(partialName)
+        val foundGroups = repository.findByPartialName(partialName)
+        Logger.getAnonymousLogger().log(Level.SEVERE, foundGroups.toString())
+        return groupsView(foundGroups)
     }
 
     fun groupsView(groups: List<Group>) = mapOf("groups" to groups)
-
 }

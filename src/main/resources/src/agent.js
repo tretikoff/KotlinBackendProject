@@ -90,13 +90,13 @@ let news = [
 
 const News = {
     forGroup: async id => {
-        let answer = (await requests.get('/news', id)).news;
+        let answer = (await requests.get(`/news/${id}`)).news;
         console.log(">>>>>>>>>>>>>>>", answer);
         return answer;
     },
-    create: async (groupId, news) => {
+    create: async  news => {
         news.id = 0;
-        let answer = await requests.post('/news', {id: groupId, news: news});
+        let answer = await requests.post('/news', {news: news});
         console.log(">>>>>>>>>>>>>>>", answer);
         return answer;
     }

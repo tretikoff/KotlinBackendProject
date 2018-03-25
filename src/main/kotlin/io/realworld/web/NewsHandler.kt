@@ -9,6 +9,8 @@ import io.realworld.repository.UserRepository
 import io.realworld.service.UserService
 import org.springframework.validation.Errors
 import org.springframework.web.bind.annotation.*
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.validation.Valid
 
 @RestController
@@ -18,10 +20,11 @@ class NewsHandler(val repository: NewsRepository,
                    val userService: UserService) {
 
     @ApiKeySecured(mandatory = false)
-    @GetMapping("/api/news")
-    fun groupNews(@Valid @RequestBody id: Long, errors: Errors): Any {
+    @GetMapping("/api/news/{id}")
+    fun groupNews(@PathVariable id: Long): Any {
         val currentGroup = groupRepository.findById(id)
         val groupNews = repository.findAllByGroup(currentGroup.get())
+        Logger.getAnonymousLogger().log(Level.SEVERE, groupNews.toString())
 
         return newsView(groupNews)
     }

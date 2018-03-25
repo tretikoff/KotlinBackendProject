@@ -1,6 +1,7 @@
 package io.realworld
 
 import io.realworld.jwt.ExposeResponseInterceptor
+import io.realworld.service.TelegramBot
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.web.server.ErrorPage
@@ -63,6 +64,7 @@ class ApiApplication : WebMvcConfigurerAdapter() {
 
 fun main(args: Array<String>) {
     SpringApplication.run(ApiApplication::class.java, *args)
+    TelegramBot.main()
 }
 
 

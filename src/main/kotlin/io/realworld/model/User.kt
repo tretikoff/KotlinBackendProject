@@ -15,6 +15,7 @@ data class User(var email: String = "",
                 var token: String = "",
                 var username: String = "",
                 var bio: String = "",
+                var chatId: Long = 0,
                 var image: String = "",
                 @ManyToMany(fetch = FetchType.EAGER)
                 @JoinTable(
