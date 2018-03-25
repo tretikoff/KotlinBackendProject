@@ -1,11 +1,9 @@
 package io.realworld
 
-import io.realworld.model.Note
+import io.realworld.model.Event
 import io.realworld.model.User
-import io.realworld.repository.NoteRepository
+import io.realworld.repository.EventRepository
 import io.realworld.repository.UserRepository
-import io.realworld.repository.specification.NotesSpecifications
-import io.realworld.service.UserService
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -13,6 +11,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.streams.asSequence
 
@@ -21,12 +20,13 @@ import kotlin.streams.asSequence
 class EventTests {
 
     @Autowired
-    private var repository: NoteRepository? = null
+    private var repository: EventRepository? = null
     private var userRepository: UserRepository? = null
-    private var userService: UserService? = null
-    private var note: Note? = null
+    private var event: Event? = null
+    private var eventToRemove: Event? = null
 
-    private val user = getRandomUser()
+    private val format = SimpleDateFormat("yyyy-mm-dd")
+    private var user = getRandomUser()
 
     private final fun getRandomUser(): User {
         var name = ""
@@ -43,35 +43,55 @@ class EventTests {
 
     @Before
     fun before() {
-        userRepository?.delete(user)
-        note = Note("Hello World", "We want to thank you", user)
-        repository!!.save(note)
+        val start = java.sql.Date(format.parse("2018-02-02").time)
+        val end = java.sql.Date(format.parse("2018-02-02").time)
+        event = Event("Food party", start, end, user)
+        val newStart = java.sql.Date(format.parse("2018-02-02").time)
+        val newEnd = java.sql.Date(format.parse("2018-02-02").time)
+        eventToRemove = Event("lol", newStart, newEnd, user)
+//        user = userRepository!!.findByUsername(user.username)!!
+        userRepository?.save(user)
+//        repository!!.
+        repository!!.saveAll(arrayListOf(event, eventToRemove))
     }
 
 
     @Test
-    fun testFindAll() {
-        val userNotes = repository!!.findAll(NotesSpecifications.userNotes(user)).toList()
-
-        Assert.assertTrue("Could not get user notes", userNotes.find { (title) -> title.equals("Hello World") } != null)
+    fun testFindByUser() {
+        val userEvents = repository!!.findAllByUser(user)
+        Assert.assertTrue("Could not get user events",
+                userEvents.find { (title) ->
+                    title == event!!.title
+                } != null)
     }
 
     @Test
     fun testFindById() {
-        Assert.assertTrue(repository!!.findById(1) != null)
+        Assert.assertTrue(repository!!.findById(1).isPresent)
     }
 
     @Test
-    fun testFindByUserId() {
-        val userNotes = repository!!.findAllByUser(user)
-        Assert.assertTrue(!userNotes.isEmpty())
-        Assert.assertTrue(userNotes[0].user == user)
+    fun testFindAllByUser() {
+        val userEvents = repository!!.findAllByUser(user)
+        Assert.assertTrue(!userEvents.isEmpty())
+        Assert.assertTrue(userEvents[0].user.id == user.id)
     }
 
     @Test
     fun testRemoveById() {
-        val noteToRemove = repository!!.findByTitle(note!!.title)[0]
-        repository!!.removeById(noteToRemove.id)
-        Assert.assertFalse(repository!!.findById(noteToRemove.id).isPresent)
+        repository!!.removeById(eventToRemove!!.id)
+        Assert.assertFalse(repository!!.findById(eventToRemove!!.id).isPresent)
+    }
+
+    @Test
+    fun testUpdate() {
+        var title = "updated event"
+        event!!.title = title
+
+        var newEvent = repository!!.findById(event!!.id).get()
+        newEvent.title = title
+        repository!!.save(newEvent)
+        newEvent = repository!!.findById(event!!.id).get()
+        Assert.assertTrue(newEvent.title == title )
     }
 }

@@ -17,7 +17,7 @@ data class User(var email: String = "",
                 var bio: String = "",
                 var image: String = "",
                 @ManyToMany(fetch = FetchType.EAGER)
-                @Cascade(CascadeType.ALL)
+//                @Cascade(CascadeType.ALL)
                 @JoinTable(
                         name = "group_to_user",
                         joinColumns = arrayOf(JoinColumn(name = "user_id", referencedColumnName = "id")),

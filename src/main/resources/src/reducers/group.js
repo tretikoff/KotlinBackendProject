@@ -16,7 +16,7 @@ export default (state = {}, action) => {
     case GROUPS_PAGE_LOADED:
       return {
         ...state,
-        groups: action.payload[0],
+        groups: action.payload,
       };
     case GROUPS_PAGE_UNLOADED:
       return {};

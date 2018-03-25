@@ -1,5 +1,6 @@
 import superagentPromise from 'superagent-promise';
 import _superagent from 'superagent';
+import moment from 'moment';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
@@ -36,46 +37,6 @@ const Auth = {
         requests.put('/user', {user})
 };
 
-// const Tags = {
-//   getAll: () => requests.get('/tags')
-// };
-//
-// const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
-// const omitSlug = article => Object.assign({}, article, {slug: undefined})
-// const Articles = {
-//   all: page =>
-//     requests.get(`/articles?${limit(10, page)}`),
-//   byAuthor: (author, page) =>
-//     requests.get(`/articles?author=${encode(author)}&${limit(5, page)}`),
-//   byTag: (tag, page) =>
-//     requests.get(`/articles?tag=${encode(tag)}&${limit(10, page)}`),
-//   del: slug =>
-//     requests.del(`/articles/${slug}`),
-//   favorite: slug =>
-//     requests.post(`/articles/${slug}/favorite`),
-//   favoritedBy: (author, page) =>
-//     requests.get(`/articles?favorited=${encode(author)}&${limit(5, page)}`),
-//   feed: () =>
-//     requests.get('/articles/feed?limit=10&offset=0'),
-//   get: slug =>
-//     requests.get(`/articles/${slug}`),
-//   unfavorite: slug =>
-//     requests.del(`/articles/${slug}/favorite`),
-//   update: article =>
-//     requests.put(`/articles/${article.slug}`, {article: omitSlug(article)}),
-//   create: article =>
-//     requests.post('/articles', {article})
-// };
-//
-// const Comments = {
-//   create: (slug, comment) =>
-//     requests.post(`/articles/${slug}/comments`, {comment}),
-//   delete: (slug, commentId) =>
-//     requests.del(`/articles/${slug}/comments/${commentId}`),
-//   forArticle: slug =>
-//     requests.get(`/articles/${slug}/comments`)
-// };
-
 const Profile = {
     follow: username =>
         requests.post(`/profiles/${username}/follow`),
@@ -88,10 +49,11 @@ const Profile = {
 
 const Groups = {
     userGroups: async user => {
-        let answer = await requests.get('/groups', user.id);
+        let answer = (await requests.get('/groups', user.id)).groups;
         console.log(">>>>>>>>>>>>>>>", answer);
         return answer;
     },
+
     create: async group => {
         group.id = 1;
         let answer = (await requests.post('/groups', {group}));
@@ -104,10 +66,11 @@ const Groups = {
         console.log(">>>>>>>>>>>>>>>", answer);
         return answer;
     },
+
     find: async partialName => {
         let answer = (await requests.get(`/groups/${partialName}`));
         console.log(">>>>>>>>>>>>>>>", answer);
-        return answer;
+        return answer.groups;
     }
 };
 
@@ -126,32 +89,32 @@ let news = [
 ];
 
 const News = {
-    create: news => {
+    create: async news => {
         news.id = 0;
-        news.push(news);
-        return {news: news[news.length - 1]}
+        let answer = (await requests.post('/news', {news: news})).news;
+        console.log(">>>>>>>>>>>>>>>", answer);
+        return answer;
     },
-    forGroup: id => {
-        return news.filter(news => news.groupId === id)
+    forGroup: async id => {
+        let answer = await requests.get('/news', id);
+        console.log(">>>>>>>>>>>>>>>", answer);
+        return answer;
     }
 };
 
-// let events = [
-//   {
-//     "id": 1,
-//     "title": "All Day Event",
-//     "start": "2018-02-02"
-// }];
-
 const Events = {
-    userEvents: async user => {
+    userEvents: async () => {
         let answer = (await requests.get('/events')).events;
         console.log(">>>>>>>>>>>>>>>", answer);
         return answer;
     },
     create: async event => {
         event.id = 0;
-        let answer = await requests.post('/events', event);
+        let start = moment(event.start, "llll").format("YYYY-MM-DD");
+        let end = moment(event.end, "llll").format("YYYY-MM-DD");
+        event.start = start;
+        event.end = end;
+        let answer = await requests.post('/events', {event: event});
         console.log(">>>>>", answer);
         return answer;
     },
@@ -160,9 +123,8 @@ const Events = {
         console.log(">>>>>", answer);
         return answer;
     },
-    edit: async ({title, start, end}) => {
-        const event = {title, start, end};
-        let answer = await requests.put(`/events`, event);
+    edit: async (event) => {
+        let answer = await requests.put(`/events`, {event: event});
         console.log(">>>>>", answer);
         return answer;
     }

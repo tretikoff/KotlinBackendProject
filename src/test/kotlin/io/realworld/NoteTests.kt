@@ -23,7 +23,6 @@ class NoteTests {
     @Autowired
     private var repository: NoteRepository? = null
     private var userRepository: UserRepository? = null
-    private var userService: UserService? = null
     private var note: Note? = null
 
     private val user = getRandomUser()
@@ -65,7 +64,7 @@ class NoteTests {
     fun testFindByUserId() {
         val userNotes = repository!!.findAllByUser(user)
         Assert.assertTrue(!userNotes.isEmpty())
-        Assert.assertTrue(userNotes[0].user == user)
+        Assert.assertTrue(userNotes[0].user.id == user.id)
     }
 
     @Test

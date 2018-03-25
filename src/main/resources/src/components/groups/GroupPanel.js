@@ -4,7 +4,6 @@ import {DataList} from 'primereact/components/datalist/DataList'
 import NewsTemplate from './NewsTemplate'
 
 const mapStateToProps = state => {
-  console.log(state.group.news);
   return ({
     news: state.group.news,
     group: state.group.group

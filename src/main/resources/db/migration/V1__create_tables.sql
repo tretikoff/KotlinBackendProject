@@ -31,9 +31,9 @@ CREATE TABLE news (
 );
 
 
-CREATE TABLE event (
-  id         VARCHAR(255) PRIMARY KEY,
-  user_id    VARCHAR(255) NOT NULL,
+CREATE TABLE events (
+  id         SERIAL PRIMARY KEY,
+  user_id    BIGINT NOT NULL,
   title      VARCHAR(255) NOT NULL,
   start_date TIMESTAMP    NOT NULL,
   end_date   TIMESTAMP

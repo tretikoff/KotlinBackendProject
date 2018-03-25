@@ -1,6 +1,5 @@
 package io.realworld.web
 
-import io.realworld.exception.InvalidRequest
 import io.realworld.jwt.ApiKeySecured
 
 import io.realworld.model.Note
@@ -50,7 +49,4 @@ class NoteHandler(val repository: NoteRepository,
 
     fun NotesView(notes: List<Note>, currentUser: User)
             = mapOf("notes" to notes)
-
-    fun NoteView(note: Note)
-            = mapOf("note" to note)
 }

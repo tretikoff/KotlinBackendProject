@@ -19,7 +19,8 @@ class GroupHandler(val repository: GroupRepository,
     @ApiKeySecured(mandatory = false)
     @GetMapping("/api/groups")
     fun groups(): Any {
-        return userRepository.findByUsername(userService.currentUser.get().username)!!.groups
+        val user = userRepository.findByUsername(userService.currentUser.get().username)
+        return groupsView(user!!.groups)
     }
 
     @ApiKeySecured
@@ -54,4 +55,7 @@ class GroupHandler(val repository: GroupRepository,
     fun findByPartialName(@PathVariable partialName: String): Any {
         return repository.findByPartialName(partialName)
     }
+
+    fun groupsView(groups: List<Group>) = mapOf("groups" to groups)
+
 }

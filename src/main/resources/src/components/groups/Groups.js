@@ -32,12 +32,11 @@ class Groups extends React.Component {
   componentWillMount() {
     let groups = agent.Groups.userGroups(this.props.currentUser);
     // this.setState({selectedGroup: groups ? groups[0] : []});
-    this.props.onLoad([
-      groups
-    ]);
+    this.props.onLoad(groups);
     if (groups) {
       let group = groups[0];
-      this.props.onGroupUpdate([group, agent.News.forGroup(group.id)])
+      if (group)
+        this.props.onGroupUpdate([group, agent.News.forGroup(group.id)])
     }
   }
 
@@ -76,15 +75,15 @@ class Groups extends React.Component {
                 Group
               </button>
             </li>
-            {this.props.groups.map((group) => {
-              return (
-                <li key={group.id}>
-                  <button className="button button--link" onClick={() => {
-                    this.props.onGroupUpdate([group, agent.News.forGroup(group.id)])
-                  }}>{group.name}</button>
-                </li>
-              )
-            })}
+              {this.props.groups.map((group) => {
+                  return (
+                      <li key={group.id}>
+                          <button className="button button--link" onClick={() => {
+                              this.props.onGroupUpdate([group, agent.News.forGroup(group.id)])
+                          }}>{group.name}</button>
+                      </li>
+                  )
+              })}
           </ul>
         </div>
 

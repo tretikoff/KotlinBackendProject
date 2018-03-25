@@ -1,0 +1,10 @@
+cd /mnt/e/KotlinBackendProject/src/main/resources
+rm -rf /mnt/e/CourseProject/src
+cp -r src /mnt/e/CourseProject/src
+
+cd /mnt/e/CourseProject
+npm run build
+mv build static
+
+rm -rf /mnt/e/KotlinBackendProject/src/main/resources/static
+cp -r static /mnt/e/KotlinBackendProject/src/main/resources/static

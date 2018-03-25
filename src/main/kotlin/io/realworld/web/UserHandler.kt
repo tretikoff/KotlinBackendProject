@@ -1,6 +1,9 @@
 package io.realworld.web
 
-import io.realworld.exception.*
+import io.realworld.exception.ForbiddenRequestException
+import io.realworld.exception.InvalidException
+import io.realworld.exception.InvalidLoginException
+import io.realworld.exception.InvalidRequest
 import io.realworld.jwt.ApiKeySecured
 import io.realworld.model.User
 import io.realworld.model.inout.Login
@@ -39,7 +42,6 @@ class UserHandler(val repository: UserRepository,
 
     @PostMapping("/api/users")
     fun register(@Valid @RequestBody register: Register, errors: Errors): Any {
-        Logger.getAnonymousLogger().log(Level.SEVERE, "start register")
         InvalidRequest.check(errors)
 
         // check for duplicate user
@@ -67,6 +69,7 @@ class UserHandler(val repository: UserRepository,
 
         // check for errors
         val errors = org.springframework.validation.BindException(this, "")
+        Logger.getAnonymousLogger().log(Level.SEVERE, "currentUser is $currentUser user is $user")
         if (currentUser.email != user.email && user.email != null) {
             if (repository.existsByEmail(user.email!!)) {
                 errors.addError(FieldError("", "email", "already taken"))
@@ -83,7 +86,8 @@ class UserHandler(val repository: UserRepository,
         InvalidRequest.check(errors)
 
         // update the user
-        val u = currentUser.copy(email = user.email ?: currentUser.email, username = user.username ?: currentUser.username,
+        val u = currentUser.copy(email = user.email ?: currentUser.email, username = user.username
+                ?: currentUser.username,
                 password = BCrypt.hashpw(user.password, BCrypt.gensalt()), image = user.image ?: currentUser.image,
                 bio = user.bio ?: currentUser.bio)
         // update token only if email changed

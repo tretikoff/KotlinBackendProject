@@ -1,8 +1,6 @@
 package io.realworld.repository
 
 import io.realworld.model.Group
-import io.realworld.model.Note
-import io.realworld.model.User
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository

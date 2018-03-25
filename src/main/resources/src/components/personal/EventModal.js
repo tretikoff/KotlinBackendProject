@@ -36,16 +36,12 @@ export default class EventModal extends React.Component {
 
   onSaveButtonClick = () => {
     const event = this.state.event;
-    console.log(event);
 
     let title = this.state.title;
     let start = this.state.start ? this.state.start : event.start;
     let end = this.state.end ? this.state.end : this.state.end;
-    console.log(event);
     let id = event ? event.id : uuid();
-    console.log(event);
 
-    console.log(id);
     if (!title) {
       this.setState({error: 'Укажите, пожайлуста, название события'});
       return;

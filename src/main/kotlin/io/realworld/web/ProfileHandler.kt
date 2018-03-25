@@ -21,34 +21,6 @@ class ProfileHandler(val userRepository: UserRepository,
         throw NotFoundException()
     }
 
-//    @ApiKeySecured
-//    @PostMapping("/api/profiles/{username}/follow")
-//    fun follow(@PathVariable username: String): Any {
-//        userRepository.findByUsername(username)?.let {
-//            var currentUser = userService.currentUser()
-//            if (!currentUser.follows.contains(it)) {
-//                currentUser.follows.add(it)
-//                currentUser = userService.setCurrentUser(userRepository.save(currentUser))
-//            }
-//            return view(it, currentUser)
-//        }
-//        throw NotFoundException()
-//    }
-
-//    @ApiKeySecured
-//    @DeleteMapping("/api/profiles/{username}/follow")
-//    fun unfollow(@PathVariable username: String): Any {
-//        userRepository.findByUsername(username)?.let {
-//            var currentUser = userService.currentUser()
-//            if (currentUser.follows.contains(it)) {
-//                currentUser.follows.remove(it)
-//                currentUser = userService.setCurrentUser(userRepository.save(currentUser))
-//            }
-//            return view(it, currentUser)
-//        }
-//        throw NotFoundException()
-//    }
-
     fun view(user: User, currentUser: User) = mapOf("profile" to Profile.fromUser(user, currentUser))
 
 }

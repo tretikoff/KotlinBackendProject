@@ -1,11 +1,11 @@
 package io.realworld
 
-import io.realworld.model.Note
+import io.realworld.model.Group
+import io.realworld.model.News
 import io.realworld.model.User
-import io.realworld.repository.NoteRepository
+import io.realworld.repository.GroupRepository
+import io.realworld.repository.NewsRepository
 import io.realworld.repository.UserRepository
-import io.realworld.repository.specification.NotesSpecifications
-import io.realworld.service.UserService
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -21,10 +21,14 @@ import kotlin.streams.asSequence
 class NewsTests {
 
     @Autowired
-    private var repository: NoteRepository? = null
     private var userRepository: UserRepository? = null
-    private var userService: UserService? = null
-    private var note: Note? = null
+    @Autowired
+    private var groupRepository: GroupRepository? = null
+    @Autowired
+    private var repository: NewsRepository? = null
+
+    private var group: Group? = null
+    private var news: News? = null
 
     private val user = getRandomUser()
 
@@ -43,35 +47,35 @@ class NewsTests {
 
     @Before
     fun before() {
-        userRepository?.delete(user)
-        note = Note("Hello World", "We want to thank you", user)
-        repository!!.save(note)
+        group = Group("KusKusKlan", listOf(user))
+        news = News("Something big happened", "lololo", group!!)
+        repository!!.save(news)
+
+        groupRepository!!.save(group)
+        user.groups = listOf(group!!)
+        Assert.assertNotNull(groupRepository)
+        Assert.assertNotNull(user)
+        Assert.assertNotNull(group)
+        Assert.assertNotNull(userRepository)
+        userRepository!!.save(user)
+
     }
 
-
     @Test
-    fun testFindAll() {
-        val userNotes = repository!!.findAll(NotesSpecifications.userNotes(user)).toList()
+    fun testFindByGroup() {
+        val groupNews = repository!!.findAllByGroup(group!!)
 
-        Assert.assertTrue("Could not get user notes", userNotes.find { (title) -> title.equals("Hello World") } != null)
+        Assert.assertTrue("Could not get group news", groupNews.find { (title) -> title == news!!.title } != null)
     }
 
     @Test
     fun testFindById() {
-        Assert.assertTrue(repository!!.findById(1) != null)
+        Assert.assertTrue(repository!!.findById(1).isPresent)
     }
 
     @Test
-    fun testFindByUserId() {
-        val userNotes = repository!!.findAllByUser(user)
-        Assert.assertTrue(!userNotes.isEmpty())
-        Assert.assertTrue(userNotes[0].user == user)
-    }
-
-    @Test
-    fun testRemoveById() {
-        val noteToRemove = repository!!.findByTitle(note!!.title)[0]
-        repository!!.removeById(noteToRemove.id)
-        Assert.assertFalse(repository!!.findById(noteToRemove.id).isPresent)
+    fun testFindByTitle() {
+        val foundNews = repository!!.findByTitle(news!!.title)[0]
+        Assert.assertTrue(foundNews.title == news!!.title)
     }
 }
