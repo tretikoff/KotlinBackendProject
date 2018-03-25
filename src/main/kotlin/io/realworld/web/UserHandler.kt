@@ -10,6 +10,7 @@ import io.realworld.model.inout.Login
 import io.realworld.model.inout.Register
 import io.realworld.model.inout.UpdateUser
 import io.realworld.repository.UserRepository
+import io.realworld.service.TelegramBot
 import io.realworld.service.UserService
 import org.mindrot.jbcrypt.BCrypt
 import org.springframework.validation.BindException
@@ -21,8 +22,12 @@ import java.util.logging.Logger
 import javax.validation.Valid
 
 @RestController
-class UserHandler(val repository: UserRepository,
-                  val service: UserService) {
+class UserHandler(final val repository: UserRepository,
+                  final val service: UserService) {
+
+    init {
+        TelegramBot(service, repository).main()
+    }
 
     @PostMapping("/api/users/login")
     fun login(@Valid @RequestBody login: Login, errors: Errors): Any {

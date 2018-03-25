@@ -64,7 +64,6 @@ class ApiApplication : WebMvcConfigurerAdapter() {
 
 fun main(args: Array<String>) {
     SpringApplication.run(ApiApplication::class.java, *args)
-    TelegramBot.main()
 }
 
 

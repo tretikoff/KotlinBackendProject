@@ -5,6 +5,7 @@ import io.realworld.model.Event
 import io.realworld.model.User
 import io.realworld.model.inout.EventData
 import io.realworld.repository.EventRepository
+import io.realworld.service.TelegramBot
 import io.realworld.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.Errors
@@ -15,6 +16,8 @@ import javax.validation.Valid
 @RestController
 class EventHandler(val repository: EventRepository,
                    val userService: UserService) {
+
+
 
     private val format = SimpleDateFormat("yyyy-MM-dd")
 

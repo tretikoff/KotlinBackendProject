@@ -1,7 +1,6 @@
 package io.realworld.web
 
 import io.realworld.jwt.ApiKeySecured
-import io.realworld.model.Group
 import io.realworld.model.News
 import io.realworld.repository.GroupRepository
 import io.realworld.repository.NewsRepository
@@ -41,5 +40,4 @@ class NewsHandler(val repository: NewsRepository,
     }
 
     fun newsView(news: List<News>) = mapOf("news" to news)
-
 }

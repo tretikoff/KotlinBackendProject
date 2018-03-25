@@ -1,5 +1,6 @@
 package io.realworld.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonRootName
 import org.hibernate.annotations.Cascade
 import org.hibernate.annotations.CascadeType
@@ -12,6 +13,7 @@ data class News(var title: String = "",
                 @ManyToOne(fetch = FetchType.LAZY)
                 @Cascade(CascadeType.ALL)
                 @JoinColumn(name = "group_id")
+                @JsonIgnore
                 var group: Group = Group(),
                 @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
                 var id: Long = 0)
