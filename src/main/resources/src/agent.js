@@ -89,14 +89,14 @@ let news = [
 ];
 
 const News = {
-    create: async news => {
-        news.id = 0;
-        let answer = (await requests.post('/news', {news: news})).news;
+    forGroup: async id => {
+        let answer = (await requests.get('/news', id)).news;
         console.log(">>>>>>>>>>>>>>>", answer);
         return answer;
     },
-    forGroup: async id => {
-        let answer = await requests.get('/news', id);
+    create: async (groupId, news) => {
+        news.id = 0;
+        let answer = await requests.post('/news', {id: groupId, news: news});
         console.log(">>>>>>>>>>>>>>>", answer);
         return answer;
     }

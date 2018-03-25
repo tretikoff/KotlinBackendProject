@@ -33,7 +33,7 @@ class ApiKeySecuredAspect(@Autowired val userService: UserService) {
             return joinPoint.proceed()
 
         // see the ExposeResponseInterceptor class.
-//        val response = request!!.getAttribute(ExposeResponseInterceptor.KEY) as HttpServletResponse
+        val response = request!!.getAttribute(ExposeResponseInterceptor.KEY) as HttpServletResponse
 
         // check for needed roles
         val signature = joinPoint.signature as MethodSignature
@@ -43,9 +43,9 @@ class ApiKeySecuredAspect(@Autowired val userService: UserService) {
         val apiKey = request!!.getHeader("Authorization")?.replace("Token ", "")
 
         if (StringUtils.isEmpty(apiKey) && anno.mandatory) {
-//            LOG.info("No Authorization part of the request header/parameters, returning {}.", HttpServletResponse.SC_UNAUTHORIZED)
+            LOG.info("No Authorization part of the request header/parameters, returning {}.", HttpServletResponse.SC_UNAUTHORIZED)
 
-//            issueError(response)
+            issueError(response)
             return null
         }
 
@@ -55,7 +55,7 @@ class ApiKeySecuredAspect(@Autowired val userService: UserService) {
         if (user == null && anno.mandatory) {
             LOG.info("No user with Authorization: {}, returning {}.", apiKey, HttpServletResponse.SC_UNAUTHORIZED)
 
-//            issueError(response)
+            issueError(response)
             return null
         } else {
             // validate JWT
@@ -69,13 +69,13 @@ class ApiKeySecuredAspect(@Autowired val userService: UserService) {
                     } else { // error
                         LOG.info("Authorization: {} is an invalid JWT.", apiKey, HttpServletResponse.SC_UNAUTHORIZED)
 
-//                        issueError(response)
+                        issueError(response)
                         return null
                     }
                 }
             } catch (e: Exception) {
                 if (anno.mandatory) {
-//                    issueError(response)
+                    issueError(response)
                     return null
                 } else
                     user = User()
@@ -91,7 +91,7 @@ class ApiKeySecuredAspect(@Autowired val userService: UserService) {
         try {
             val result = joinPoint.proceed()
             // remove user from thread local
-//            userService.clearCurrentUser()
+            userService.clearCurrentUser()
 
             LOG.info("DONE accessing resource.")
 

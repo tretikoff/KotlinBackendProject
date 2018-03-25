@@ -50,7 +50,9 @@ class UserHandler(val repository: UserRepository,
         InvalidRequest.check(errors)
 
         val user = User(username = register.username!!,
-                email = register.email!!, password = BCrypt.hashpw(register.password, BCrypt.gensalt()))
+                email = register.email!!,
+                password = BCrypt.hashpw(register.password, BCrypt.gensalt()),
+                image = "https://static.productionready.io/images/smiley-cyrus.jpg")
         user.token = service.newToken(user)
 
         return view(repository.save(user))

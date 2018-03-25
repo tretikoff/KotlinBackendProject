@@ -19,18 +19,18 @@ class NewsHandler(val repository: NewsRepository,
 
     @ApiKeySecured(mandatory = false)
     @GetMapping("/api/news")
-    fun groupNews(@Valid @RequestBody group: Group, errors: Errors): Any {
-        val currentGroup = groupRepository.findByName(group.name)
-        val groupNews = repository.findAllByGroup(currentGroup.get(0))
+    fun groupNews(@Valid @RequestBody id: Long, errors: Errors): Any {
+        val currentGroup = groupRepository.findById(id)
+        val groupNews = repository.findAllByGroup(currentGroup.get())
 
         return newsView(groupNews)
     }
 
     @ApiKeySecured
     @PostMapping("/api/news")
-    fun newGroup(@Valid @RequestBody group: Group, newNews: News, errors: Errors): Any {
+    fun newGroup(@Valid @RequestBody id: Long, newNews: News, errors: Errors): Any {
 
-        val currentGroup = groupRepository.findByName(group.name)[0]
+        val currentGroup = groupRepository.findById(id).get()
         newNews.group = currentGroup
         repository.save(newNews)
 
